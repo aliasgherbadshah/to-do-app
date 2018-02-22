@@ -1,28 +1,11 @@
 var express = require("express");
+var bodyParser = require("body-parser");
 var app = express();
 var Port = process.env.PORT || 8000;
-var todo =  [{
-	id : 1,
-	description: "i want to send an important mail to my boss",
-	complete : false
-},
-{
-	id : 2,
-	description: "i am going movie today at 8:00 clock",
-	complete : false
-},
-{
-	id : 3,
-	description: "tomorrow i have some work at big bazar",
-	complete : true
-},
-{
-	id : 4,
-	description: "i have an wedding invitation today",
-	complete : false
-}
+var todo =  [];
+var ID = 1;
 
-]
+app.use(bodyParser.json());
 
 
 app.get("/",function(req, res){
@@ -51,6 +34,22 @@ app.get("/todos/:id", function(req, res){
 	res.status(404).send;
 }
 })
+
+
+
+app.post("/todos", function(req, res){
+	var body = req.body;
+	body.id = ID++;
+	
+	todo.push(body)
+	res.json(body)
+
+})
+
+
+
+
+
 
 
 app.listen(Port,function(){

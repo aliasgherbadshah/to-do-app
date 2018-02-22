@@ -35,15 +35,17 @@ app.get("/todos/:id", function(req, res){
 app.post("/todos", function(req, res){
 	var body = _.pick(req.body, 'description', 'complete');
 
-	if(!_.isBoolean(body.complete) || !_.isString(body.description) || body.description.trim().length === 0){
+	if(!_.isBoolean(body.complete) || !_.isString(body.description) || (body.description.trim().length === 0)){
+
 		res.status(400).send
+	}else{
+
+		body.id = ID++;
+	
+			todo.push(body)
 	}
 
-
-
-	body.id = ID++;
 	
-	todo.push(body)
 	res.json(body)
 
 })
@@ -62,7 +64,9 @@ app.delete("/todos/:id",function(req, res){
 
 
 //update item
-app.put("todos/:id",function(req,res){
+app.put("/todos/:id",function(req,res){
+
+	
 	var todosId = parseInt(req.params.id, 10);
 	var matched = _.findWhere(todo, {id: todosId}); 
 	var body = _.pick(req.body, 'description', 'complete');

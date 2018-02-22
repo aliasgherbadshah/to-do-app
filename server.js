@@ -15,6 +15,11 @@ var todo =  [{
 	id : 3,
 	description: "tomorrow i have some work at big bazar",
 	complete : true
+},
+{
+	id : 4,
+	description: "i have an wedding invitation today",
+	complete : false
 }
 
 ]

@@ -48,6 +48,13 @@ app.post("/todos", function(req, res){
 
 })
 
+app.delete("/todos/:id",function(req, res){
+	var todosId = parseInt(req.params.id, 10);
+	var matched = _.findWhere(todo, {id: todosId}); 
+	todo = _.without(todo, matched);
+	res.send("list is deleted")
+})
+
 
 
 

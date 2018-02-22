@@ -31,7 +31,7 @@ app.get("/todos/:id", function(req, res){
 })
 
 
-
+//take item
 app.post("/todos", function(req, res){
 	var body = _.pick(req.body, 'description', 'complete');
 
@@ -48,6 +48,9 @@ app.post("/todos", function(req, res){
 
 })
 
+
+
+//delete item
 app.delete("/todos/:id",function(req, res){
 	var todosId = parseInt(req.params.id, 10);
 	var matched = _.findWhere(todo, {id: todosId}); 
@@ -58,7 +61,35 @@ app.delete("/todos/:id",function(req, res){
 
 
 
+//update item
+app.put("todos/:id",function(req,res){
+	var todosId = parseInt(req.params.id, 10);
+	var matched = _.findWhere(todo, {id: todosId}); 
+	var body = _.pick(req.body, 'description', 'complete');
+	
+	var varification = {};
 
+	if(body.hasOwnProperty('complete') && _.isBoolean(body.complete)){
+		varification.complete = body.complete;
+		
+	}else if(body.hasOwnProperty('complete')){
+		res.status(400).send();
+	}else{
+
+	}
+
+	if (body.hasOwnProperty('description') && _.isString(body.description)) {
+		varification.description = body.description;
+		
+	}else if (body.hasOwnProperty('description')) {
+		res.status(400).send()
+	}
+
+	_.extend(matched, varification);
+
+
+	res.json(matched)
+})
 
 
 app.listen(Port,function(){

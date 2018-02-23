@@ -1,4 +1,4 @@
-module.exports = function(sequelise, DataType) {
+module.exports = function(sequelize, DataType) {
 
 	return  sequelize.define('todo', {
 		description: {

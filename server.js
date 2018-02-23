@@ -119,11 +119,36 @@ app.post("/todos", function(req, res) {
 //delete item
 app.delete("/todos/:id", function(req, res) {
 	var todosId = parseInt(req.params.id, 10);
-	var matched = _.findWhere(todo, {
-		id: todosId
-	});
-	todo = _.without(todo, matched);
-	res.send("list is deleted")
+	db.todo.findAll({
+		where: {
+			id: todosId
+		}
+		
+	}).then(function(todo) {
+		if (todo) {
+			console.log("-------------------------------------------")
+			deleted: {
+				where: {
+					id: todosId
+				}
+			}
+		}else{
+			res.send("no id found")
+		}
+	}).then(function(){
+		res.send("item was deleted")
+	})
+
+
+
+	// var matched = _.findWhere(todo, {
+	// 	id: todosId
+	// });
+
+
+
+	// todo = _.without(todo, matched);
+	// res.send("list is deleted")
 })
 
 

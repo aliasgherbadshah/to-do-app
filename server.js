@@ -120,13 +120,13 @@ app.post("/todos", function(req, res) {
 app.delete("/todos/:id", function(req, res) {
 	var todosId = parseInt(req.params.id, 10);
 	db.todo.destroy({
-		where:{
+		where: {
 			id: todosId
 		}
-	}).then(function(deleteRow){
-		if(deleteRow === 0){
+	}).then(function(deleteRow) {
+		if (deleteRow === 0) {
 			res.send('no such id found for delete')
-		}else{
+		} else {
 			res.send('the item contain that id is deleted')
 		}
 	})
@@ -155,25 +155,25 @@ app.put("/todos/:id", function(req, res) {
 	if (body.hasOwnProperty('complete')) {
 		varification.complete = body.complete;
 
-	} 
+	}
 
 	if (body.hasOwnProperty('description')) {
 		varification.description = body.description;
 
-	} 
+	}
 
-	db.todo.findById(todosId).then(function(todo){
-		if(todo){
-			console.log("=-----------------------------")
-			return todo.update(varification);
-		}else{
+	db.todo.findById(todosId).then(function(todo) {
+		if (todo) {
+			
+			todo.update(varification).then(function(todo) {
+				res.json(todo.toJSON());
+			}, function(error) {
+				res.status(400).send();
+			})
+		} else {
 			res.send('no match found for update')
 		}
-	}, function(error){
-		res.status(400).send();
-	}).then(function(todo){
-		res.json(todo.toJSON());
-	}, function(error){
+	}, function(error) {
 		res.status(400).send();
 	})
 })

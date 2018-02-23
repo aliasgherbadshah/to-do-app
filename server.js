@@ -119,26 +119,17 @@ app.post("/todos", function(req, res) {
 //delete item
 app.delete("/todos/:id", function(req, res) {
 	var todosId = parseInt(req.params.id, 10);
-	db.todo.findAll({
-		where: {
+	db.todo.destroy({
+		where:{
 			id: todosId
 		}
-		
-	}).then(function(todo) {
-		if (todo) {
-			console.log("-------------------------------------------")
-			deleted: {
-				where: {
-					id: todosId
-				}
-			}
+	}).then(function(deleteRow){
+		if(deleteRow === 0){
+			res.send('no such id found for delete')
 		}else{
-			res.send("no id found")
+			res.send('the item contain that id is deleted')
 		}
-	}).then(function(){
-		res.send("item was deleted")
 	})
-
 
 
 	// var matched = _.findWhere(todo, {
@@ -158,33 +149,33 @@ app.put("/todos/:id", function(req, res) {
 
 
 	var todosId = parseInt(req.params.id, 10);
-	var matched = _.findWhere(todo, {
-		id: todosId
-	});
 	var body = _.pick(req.body, 'description', 'complete');
-
 	var varification = {};
 
-	if (body.hasOwnProperty('complete') && _.isBoolean(body.complete)) {
+	if (body.hasOwnProperty('complete')) {
 		varification.complete = body.complete;
 
-	} else if (body.hasOwnProperty('complete')) {
-		res.status(400).send();
-	} else {
+	} 
 
-	}
-
-	if (body.hasOwnProperty('description') && _.isString(body.description)) {
+	if (body.hasOwnProperty('description')) {
 		varification.description = body.description;
 
-	} else if (body.hasOwnProperty('description')) {
-		res.status(400).send()
-	}
+	} 
 
-	_.extend(matched, varification);
-
-
-	res.json(matched)
+	db.todo.findById(todosId).then(function(todo){
+		if(todo){
+			console.log("=-----------------------------")
+			return todo.update(varification);
+		}else{
+			res.send('no match found for update')
+		}
+	}, function(error){
+		res.status(400).send();
+	}).then(function(todo){
+		res.json(todo.toJSON());
+	}, function(error){
+		res.status(400).send();
+	})
 })
 
 

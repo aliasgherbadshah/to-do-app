@@ -17,27 +17,57 @@ app.get("/", function(req, res) {
 
 
 app.get("/todos", function(req, res) {
-	var queryParam = req.query;
-	var fetchedData = todo;
+	var query = req.query;
+	var where = {};
 
-	if (queryParam.hasOwnProperty('complete') && queryParam.complete === 'true') {
-		fetchedData = _.where(fetchedData, {
-			complete: true
-		});
-	} else if (queryParam.hasOwnProperty('complete') && queryParam.complete === 'true') {
-		fetchedData = _.where(fetchedData, {
-			complete: false
-		});
-	}
-
-	if (queryParam.hasOwnProperty('q') && queryParam.q.length > 0) {
-		console.log("-------------------------")
-		fetchedData = _.filter(fetchedData, function(todo1) {
-			return todo1.description.toLowerCase().indexOf(queryParam.q.toLowerCase()) > -1
+	if (query.complete === 'true') {
+		db.todo.findAll({
+			where: {
+				complete: true
+			}
+		}).then(function(todo) {
+			if (todo) {
+				res.json(todo)
+			} else {
+				res.send("no true completion")
+			}
+		})
+	} else if (query.complete === 'false') {
+		db.todo.findAll({
+			where: {
+				complete: false
+			}
+		}).then(function(todo) {
+			if (todo) {
+				res.json(todo)
+			} else {
+				res.send("no true completion")
+			}
+		})
+	} else if (query.hasOwnProperty('q')) {
+		db.todo.findAll({
+			where: {
+				$like: '%' + query.q + '%'
+			}
+		}).then(function(todos) {
+			if (todos) {
+				res.json(todos)
+			} else {
+				res.send('no description contain this kind of string')
+			}
+		})
+	} else {
+		db.todo.findAll({
+			where: where
+		}).then(function(todo) {
+			if (todo) {
+				res.json(todo)
+			} else {
+				res.send("there is no desciption added yet")
+			}
 		})
 	}
 
-	res.json(fetchedData)
 })
 
 
@@ -45,16 +75,16 @@ app.get("/todos/:id", function(req, res) {
 	var todosId = parseInt(req.params.id, 10);
 
 	db.todo.findOne({
-		where:{
-			id:todosId
+		where: {
+			id: todosId
 		}
-	}).then(function(todo){
-		if(todo){
+	}).then(function(todo) {
+		if (todo) {
 			res.json(todo.toJSON())
-		}else{
+		} else {
 			res.send("no such description contain this id")
 		}
-	}).catch(function(error){
+	}).catch(function(error) {
 		res.status(400).send();
 	})
 

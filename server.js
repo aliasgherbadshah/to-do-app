@@ -43,15 +43,31 @@ app.get("/todos", function(req, res) {
 
 app.get("/todos/:id", function(req, res) {
 	var todosId = parseInt(req.params.id, 10);
-	var matched = _.findWhere(todo, {
-		id: todosId
-	});
 
-	if (matched) {
-		res.json(matched)
-	} else {
-		res.status(404).send;
-	}
+	db.todo.findOne({
+		where:{
+			id:todosId
+		}
+	}).then(function(todo){
+		if(todo){
+			res.json(todo.toJSON())
+		}else{
+			res.send("no such description contain this id")
+		}
+	}).catch(function(error){
+		res.status(400).send();
+	})
+
+
+	// var matched = _.findWhere(todo, {
+	// 	id: todosId
+	// });
+
+	// if (matched) {
+	// 	res.json(matched)
+	// } else {
+	// 	res.status(404).send;
+	// }
 })
 
 
@@ -60,25 +76,11 @@ app.get("/todos/:id", function(req, res) {
 app.post("/todos", function(req, res) {
 	var body = _.pick(req.body, 'description', 'complete');
 
-	db.todo.create(body).then(function(todo){
-			res.json(todo.toJSON());
-		}, function(e){
-			res.status(400).send();
-		})
-
-
-	// if (!_.isBoolean(body.complete) || !_.isString(body.description) || (body.description.trim().length === 0)) {
-
-	// 	res.status(400).send
-	// } else {
-
-	// 	body.id = ID++;
-
-	// 	todo.push(body)
-	// }
-
-
-	// res.json(body)
+	db.todo.create(body).then(function(todo) {
+		res.json(todo.toJSON());
+	}, function(e) {
+		res.status(400).send();
+	})
 
 })
 
@@ -135,7 +137,7 @@ app.put("/todos/:id", function(req, res) {
 db.sequelize.sync().then(function() {
 	app.listen(Port, function() {
 		console.log("express listning on " + Port + "!")
-	})	
+	})
 }).catch(function(error) {
 	console.log(error);
 })

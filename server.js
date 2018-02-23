@@ -63,7 +63,7 @@ app.get("/todos", function(req, res) {
 			if (todo) {
 				res.json(todo)
 			} else {
-				res.send("there is no desciption added yet")
+				res.send("there is no kind of desciption added yet")
 			}
 		})
 	}

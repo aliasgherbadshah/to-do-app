@@ -46,29 +46,29 @@ sequelize.sync().then(function() {
 
 
 
-// Todo.create({
-// 	description: "walking with the dead man",
+Todo.create({
+	description: "walking with the dead man",
 
-// }).then(function(todo) {
-// 	return Todo.create({
-// 		description: "cleaning the office trash"
-// 	})
-// }).then(function() {
-// 	return Todo.findAll({
-// 		where: {
-// 			complete: false
+}).then(function(todo) {
+	return Todo.create({
+		description: "cleaning the office trash"
+	})
+}).then(function() {
+	return Todo.findAll({
+		where: {
+			complete: false
 
-// 		}
-// 	})
-// }).then(function(todos) {
-// 	if (todos) {
+		}
+	})
+}).then(function(todos) {
+	if (todos) {
 
-// 		console.log(todos)
+		console.log(todos)
 
-// 	}
+	}
 
-// 	console.log(todos);
-// }).catch(function(error) {
-// 	console.log(error)
+	console.log(todos);
+}).catch(function(error) {
+	console.log(error)
 
-// })
+})

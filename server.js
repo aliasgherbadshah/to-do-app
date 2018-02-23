@@ -88,16 +88,6 @@ app.get("/todos/:id", function(req, res) {
 		res.status(400).send();
 	})
 
-
-	// var matched = _.findWhere(todo, {
-	// 	id: todosId
-	// });
-
-	// if (matched) {
-	// 	res.json(matched)
-	// } else {
-	// 	res.status(404).send;
-	// }
 })
 
 
@@ -131,15 +121,6 @@ app.delete("/todos/:id", function(req, res) {
 		}
 	})
 
-
-	// var matched = _.findWhere(todo, {
-	// 	id: todosId
-	// });
-
-
-
-	// todo = _.without(todo, matched);
-	// res.send("list is deleted")
 })
 
 
@@ -164,7 +145,7 @@ app.put("/todos/:id", function(req, res) {
 
 	db.todo.findById(todosId).then(function(todo) {
 		if (todo) {
-			
+
 			todo.update(varification).then(function(todo) {
 				res.json(todo.toJSON());
 			}, function(error) {
@@ -177,6 +158,39 @@ app.put("/todos/:id", function(req, res) {
 		res.status(400).send();
 	})
 })
+
+
+
+
+
+//-----------------users--------------------------------
+
+
+
+app.post('/users', function(req, res){
+
+	var body = _.pick(req.body, 'email', 'password');
+	db.user.create(body).then(function(user){
+		console.log('-----------------------------')
+		res.json(user.toJSON());
+	}, function(err){
+		console.log(err);
+		res.status(400).send()
+	})
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

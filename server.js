@@ -2,6 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var _ = require('underscore');
 var db = require('./db.js');
+var bcrypt = require('bcrypt');
 
 var app = express();
 var Port = process.env.PORT || 8000;
@@ -161,36 +162,45 @@ app.put("/todos/:id", function(req, res) {
 
 
 
-
-
 //-----------------users--------------------------------
 
 
 
-app.post('/users', function(req, res){
+app.post('/users', function(req, res) {
 
 	var body = _.pick(req.body, 'email', 'password');
-	db.user.create(body).then(function(user){
-		
+	db.user.create(body).then(function(user) {
 		res.json(user.toJSON());
-	}, function(err){
+	}, function(err) {
 		console.log(err);
 		res.status(400).send()
 	})
 })
 
 
+app.post('/users/login', function(req, res) {
+	var body = _.pick(req.body, 'email', 'password');
 
-
-
-
-
-
-
-
-
-
-
+	if (typeof body.email !== 'string' || typeof body.password !== 'string') {
+		return res.status(400).send()
+	} else {
+		db.user.findOne({
+			where: {
+				email: body.email
+			}
+		}).then(function(user) {
+				
+			if (!user || !bcrypt.compareSync(body.password, user.get('password_hash'))) {
+				return res.status(400).send()
+			}
+				
+				res.header('Auth', user.grantToken('authentication')).json(user)
+			
+		}, function(error) {
+			console.log(error);
+		})
+	}
+})
 
 
 
